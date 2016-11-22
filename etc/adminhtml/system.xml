@@ -1,0 +1,20 @@
+<?xml version="1.0" ?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="swiftotter" translate="label" sortOrder="405">
+            <label>SwiftOtter</label>
+        </tab>
+        <section id="shipping_surcharge" translate="label" type="text" sortOrder="5" showInDefault="1" showInStore="1" showInWebsite="1">
+            <label>Shipping surcharge</label>
+            <tab>swiftotter</tab>
+            <resource>SwiftOtter_ShippingSurcharge::config</resource>
+            <group id="general" translate="label" type="text" sortOrder="100" showInDefault="1" showInStore="1" showInWebsite="1">
+                <label>Configuration</label>
+                <field id="is_enabled" translate="label" type="select" sortOrder="20" showInWebsite="1" showInStore="1" showInDefault="1">
+                    <label>Enable shipping surcharge</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>
