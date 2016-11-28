@@ -67,7 +67,7 @@ class MagentoShippingModelShippingPlugin
         return (float) array_reduce($items, function ($carry, \Magento\Quote\Model\Quote\Item $item) {
             $product = $this->productRepository->getById($item->getData('product_id'));
 
-            return $carry += ($product->getData('shipping_surcharge') * $item->getQty());
+            return $carry + ($product->getData('shipping_surcharge') * $item->getQty());
         }, 0);
     }
 }
