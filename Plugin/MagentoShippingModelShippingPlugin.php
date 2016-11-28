@@ -52,6 +52,7 @@ class MagentoShippingModelShippingPlugin
 
             array_walk($rates, function ($rate) use ($shipping, $totalSurcharge) {
                 $rate->setData('price', $rate->getData('price') + $totalSurcharge);
+                $rate->setData('cost', $rate->getData('cost') + $totalSurcharge);
                 $shipping->getResult()->append($rate);
             });
 

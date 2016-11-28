@@ -52,7 +52,7 @@ class ShippingSurcharge extends \Magento\Quote\Model\Quote\Address\Total\Abstrac
                 /** @var \Magento\Quote\Model\Quote\Item */
                 $shippingSurchargeForItem = $item->getData('product')->getData('shipping_surcharge');
 
-                $item->setData('shipping_surchage', $shippingSurchargeForItem);
+                $item->setData('shipping_surcharge', $shippingSurchargeForItem);
 
                 return $carry + $shippingSurchargeForItem;
             }, 0);
