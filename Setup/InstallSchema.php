@@ -34,22 +34,32 @@ class InstallSchema implements InstallSchemaInterface
         $installer->startSetup();
 
         $installer->getConnection()->addColumn(
-            'sales_order',
+            $installer->getTable('sales_order'),
             'base_shipping_surcharge',
             [
                 'type' => \Magento\Framework\DB\Ddl\Table::TYPE_DECIMAL,
                 'nullable' => true,
-                'comment' => 'Base Shipping Surcharge'
+                'comment' => 'Base shipping surcharge'
             ]
         );
 
         $installer->getConnection()->addColumn(
-            'sales_order',
+            $installer->getTable('sales_order'),
             'shipping_surcharge',
             [
                 'type' => \Magento\Framework\DB\Ddl\Table::TYPE_DECIMAL,
                 'nullable' => true,
-                'comment' => 'Shipping Surcharge'
+                'comment' => 'Shipping surcharge'
+            ]
+        );
+
+        $installer->getConnection()->addColumn(
+            $installer->getTable('sales_order_item'),
+            'base_shipping_surcharge',
+            [
+                'type' => \Magento\Framework\DB\Ddl\Table::TYPE_DECIMAL,
+                'nullable' => true,
+                'comment' => 'Base shipping surcharge'
             ]
         );
 
@@ -59,17 +69,7 @@ class InstallSchema implements InstallSchemaInterface
             [
                 'type' => \Magento\Framework\DB\Ddl\Table::TYPE_DECIMAL,
                 'nullable' => true,
-                'comment' => 'Base Shipping Surcharge'
-            ]
-        );
-
-        $installer->getConnection()->addColumn(
-            'sales_order_item',
-            'shipping_surcharge',
-            [
-                'type' => \Magento\Framework\DB\Ddl\Table::TYPE_DECIMAL,
-                'nullable' => true,
-                'comment' => 'Shipping Surcharge'
+                'comment' => 'Shipping surcharge'
             ]
         );
 
@@ -79,7 +79,7 @@ class InstallSchema implements InstallSchemaInterface
             [
                 'type' => \Magento\Framework\DB\Ddl\Table::TYPE_DECIMAL,
                 'nullable' => true,
-                'comment' => 'Shipping sur-charge'
+                'comment' => 'Shipping surcharge'
             ]
         );
 

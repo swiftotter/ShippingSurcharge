@@ -26,13 +26,13 @@ class ShippingSurcharge extends \Magento\Quote\Model\Quote\Address\Total\Abstrac
     /**
      * @var \Magento\Framework\App\Config\ScopeConfigInterface
      */
-    private $scopeConfig;
+    private $configHelper;
 
     public function __construct(
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
+        \SwiftOtter\ShippingSurcharge\Helper\Config $configHelper
     )
     {
-        $this->scopeConfig = $scopeConfig;
+        $this->configHelper = $configHelper;
         $this->setCode('shipping_surcharge');
     }
 
@@ -47,17 +47,18 @@ class ShippingSurcharge extends \Magento\Quote\Model\Quote\Address\Total\Abstrac
         $total->setTotalAmount($this->getCode(), 0);
         $total->setBaseTotalAmount($this->getCode(), 0);
 
-        if ($this->scopeConfig->getValue('shipping_surcharge/general/is_enabled')) {
+        if ($this->configHelper->isEnabled()) {
             $totalSurcharge = array_reduce($quote->getAllItems(), function ($carry, $item) {
                 /** @var \Magento\Quote\Model\Quote\Item */
-                return $carry + $item->getData('product')->getData('shipping_surcharge');
+                $shippingSurchargeForItem = $item->getData('product')->getData('shipping_surcharge');
+
+                $item->setData('shipping_surchage', $shippingSurchargeForItem);
+
+                return $carry + $shippingSurchargeForItem;
             }, 0);
 
             $total->setTotalAmount($this->getCode(), $totalSurcharge);
             $total->setBaseTotalAmount($this->getCode(), $totalSurcharge);
-
-            $this->total->setTotalAmount('shipping', $this->total->getTotalAmount('shipping') + $totalSurcharge);
-            $this->total->setBaseTotalAmount('shipping', $this->total->getBaseTotalAmount('shipping') + $totalSurcharge);
         }
 
         return $this;
