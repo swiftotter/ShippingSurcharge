@@ -52,6 +52,7 @@ class MagentoShippingModelShippingPlugin
 
             array_walk($rates, function ($rate) use ($shipping, $totalSurcharge) {
                 $rate->setData('price', $rate->getData('price') + $totalSurcharge);
+                $rate->setData('cost', $rate->getData('cost') + $totalSurcharge);
                 $shipping->getResult()->append($rate);
             });
 
@@ -66,7 +67,7 @@ class MagentoShippingModelShippingPlugin
         return (float) array_reduce($items, function ($carry, \Magento\Quote\Model\Quote\Item $item) {
             $product = $this->productRepository->getById($item->getData('product_id'));
 
-            return $carry += ($product->getData('shipping_surcharge') * $item->getQty());
+            return $carry + ($product->getData('shipping_surcharge') * $item->getQty());
         }, 0);
     }
 }
