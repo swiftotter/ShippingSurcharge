@@ -19,7 +19,7 @@
  * @package default
  **/
 ?>
-<?php /** @var $block \Magento\Shipping\Block\Adminhtml\View */ ?>
+<?php /** @var SwiftOtter\ShippingSurcharge\Block\Adminhtml\Shipping\View $block */ ?>
 <?php $order = $block->getOrder() ?>
 <?php if ($order->getIsVirtual()) : return '';endif; ?>
 
@@ -47,7 +47,7 @@
                 (<?php /* @escapeNotVerified */ echo __('Incl. Tax'); ?> <?php /* @escapeNotVerified */ echo $_incl; ?>)
             <?php endif; ?>
 
-            <?php if ($this->helper('SwiftOtter\ShippingSurcharge\Helper\Config')->isEnabled()): ?>
+            <?php if ($block->isShippingSurchargeEnabled()): ?>
                 <p>
                     <strong><?php echo __('Shipping Surcharge: '); ?></strong><?php echo $this->helper('Magento\Framework\Pricing\Helper\Data')->currency($order->getData('shipping_surcharge'), true); ?>
                 </p>

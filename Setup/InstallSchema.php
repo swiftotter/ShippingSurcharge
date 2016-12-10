@@ -24,27 +24,66 @@ namespace SwiftOtter\ShippingSurcharge\Setup;
 use Magento\Framework\Setup\InstallSchemaInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\SchemaSetupInterface;
+use Magento\Sales\Setup\SalesSetup as SalesSetupResource;
 
 class InstallSchema implements InstallSchemaInterface
 {
+    private $salesSetupResource;
+
+    public function __construct(SalesSetupResource $salesSetupResource)
+    {
+        $this->salesSetupResource = $salesSetupResource;
+    }
+
     public function install(SchemaSetupInterface $setup, ModuleContextInterface $context)
     {
-        $installer = $setup;
+//        $setup->getConnection()->addColumn(
+//            $setup->getTable('sales_order'),
+//            'base_shipping_surcharge',
+//            [
+//                'type' => \Magento\Framework\DB\Ddl\Table::TYPE_DECIMAL,
+//                'nullable' => true,
+//                'comment' => 'Base shipping surcharge'
+//            ]
+//        );
+//
+//        $setup->getConnection()->addColumn(
+//            $setup->getTable('sales_order'),
+//            'shipping_surcharge',
+//            [
+//                'type' => \Magento\Framework\DB\Ddl\Table::TYPE_DECIMAL,
+//                'nullable' => true,
+//                'comment' => 'Shipping surcharge'
+//            ]
+//        );
+//
+//        $setup->getConnection()->addColumn(
+//            $setup->getTable('sales_order_item'),
+//            'base_shipping_surcharge',
+//            [
+//                'type' => \Magento\Framework\DB\Ddl\Table::TYPE_DECIMAL,
+//                'nullable' => true,
+//                'comment' => 'Base shipping surcharge'
+//            ]
+//        );
+//
+//        $setup->getConnection()->addColumn(
+//            $setup->getTable('sales_order_item'),
+//            'shipping_surcharge',
+//            [
+//                'type' => \Magento\Framework\DB\Ddl\Table::TYPE_DECIMAL,
+//                'nullable' => true,
+//                'comment' => 'Shipping surcharge'
+//            ]
+//        );
 
-        $installer->startSetup();
+        $this->salesSetupResource->addAttribute('order', 'base_shipping_surcharge', [ 'type' => 'decimal' ]);
+        $this->salesSetupResource->addAttribute('order', 'shipping_surcharge', [ 'type' => 'decimal' ]);
+        $this->salesSetupResource->addAttribute('order_item', 'base_shipping_surcharge', [ 'type' => 'decimal' ]);
+        $this->salesSetupResource->addAttribute('order_item', 'shipping_surcharge', [ 'type' => 'decimal' ]);
 
-        $installer->getConnection()->addColumn(
-            $installer->getTable('sales_order'),
-            'base_shipping_surcharge',
-            [
-                'type' => \Magento\Framework\DB\Ddl\Table::TYPE_DECIMAL,
-                'nullable' => true,
-                'comment' => 'Base shipping surcharge'
-            ]
-        );
-
-        $installer->getConnection()->addColumn(
-            $installer->getTable('sales_order'),
+        $setup->getConnection()->addColumn(
+            $setup->getTable('quote_item'),
             'shipping_surcharge',
             [
                 'type' => \Magento\Framework\DB\Ddl\Table::TYPE_DECIMAL,
@@ -52,37 +91,5 @@ class InstallSchema implements InstallSchemaInterface
                 'comment' => 'Shipping surcharge'
             ]
         );
-
-        $installer->getConnection()->addColumn(
-            $installer->getTable('sales_order_item'),
-            'base_shipping_surcharge',
-            [
-                'type' => \Magento\Framework\DB\Ddl\Table::TYPE_DECIMAL,
-                'nullable' => true,
-                'comment' => 'Base shipping surcharge'
-            ]
-        );
-
-        $installer->getConnection()->addColumn(
-            $installer->getTable('sales_order_item'),
-            'shipping_surcharge',
-            [
-                'type' => \Magento\Framework\DB\Ddl\Table::TYPE_DECIMAL,
-                'nullable' => true,
-                'comment' => 'Shipping surcharge'
-            ]
-        );
-
-        $installer->getConnection()->addColumn(
-            $installer->getTable('quote_item'),
-            'shipping_surcharge',
-            [
-                'type' => \Magento\Framework\DB\Ddl\Table::TYPE_DECIMAL,
-                'nullable' => true,
-                'comment' => 'Shipping surcharge'
-            ]
-        );
-
-        $installer->endSetup();
     }
 }

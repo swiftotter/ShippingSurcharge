@@ -19,11 +19,11 @@
  * @package default
  **/
 
-namespace SwiftOtter\ShippingSurcharge\Helper;
+namespace SwiftOtter\ShippingSurcharge\Config;
 
 use \Magento\Framework\App\Helper\AbstractHelper;
 
-class Config extends AbstractHelper
+class Info extends AbstractHelper
 {
     const SYSTEM_CONFIG_BASE_PATH = 'shipping_surcharge';
 
@@ -35,7 +35,7 @@ class Config extends AbstractHelper
         );
     }
 
-    public function isEnabled() : bool
+    public function isFeatureEnabled() : bool
     {
         return (bool) $this->getModuleConfig('general', 'is_enabled');
     }

@@ -21,17 +21,21 @@
 
 namespace SwiftOtter\ShippingSurcharge\Plugin;
 
+use SwiftOtter\ShippingSurcharge\Api\Calculator\RateCalculatorInterface;
+
 class MagentoShippingModelShippingPlugin
 {
-    private $configHelper;
+    private $configInfo;
     private $productRepository;
+    private $rateCalculator;
 
     public function __construct(
-        \SwiftOtter\ShippingSurcharge\Helper\Config $configHelper,
-        \Magento\Catalog\Api\ProductRepositoryInterface $productRepository
-    )
-    {
-        $this->configHelper = $configHelper;
+        \SwiftOtter\ShippingSurcharge\Config\Info $configHelper,
+        \Magento\Catalog\Api\ProductRepositoryInterface $productRepository,
+        RateCalculatorInterface $rateCalculator
+    ) {
+        $this->rateCalculator = $rateCalculator;
+        $this->configInfo = $configHelper;
         $this->productRepository = $productRepository;
     }
 
@@ -39,35 +43,17 @@ class MagentoShippingModelShippingPlugin
         \Magento\Shipping\Model\Shipping $subject,
         \Closure $proceed,
         \Magento\Quote\Model\Quote\Address\RateRequest $request
-    )
-    {
-        if ($this->configHelper->isEnabled()) {
-            $totalSurcharge = $this->getTotalSurcharge($request->getData('all_items'));
+    ) {
+        if ($this->configInfo->isFeatureEnabled()) {
+            $requestItems = $request->getData('all_items');
+            /** @var \Magento\Shipping\Model\Shipping $shipping */
             $shipping = $proceed($request);
-            /** @var \Magento\Shipping\Model\Rate\Result $results */
-            $results = clone $shipping->getResult();
-            $rates = $results->getAllRates();
 
-            $shipping->getResult()->reset();
-
-            array_walk($rates, function ($rate) use ($shipping, $totalSurcharge) {
-                $rate->setData('price', $rate->getData('price') + $totalSurcharge);
-                $rate->setData('cost', $rate->getData('cost') + $totalSurcharge);
-                $shipping->getResult()->append($rate);
-            });
+            $this->rateCalculator->calculateRates($shipping->getResult(), ...$requestItems);
 
             return $shipping;
         } else {
-            return $proceed();
+            return $proceed($request);
         }
-    }
-
-    private function getTotalSurcharge(array $items) : float
-    {
-        return (float) array_reduce($items, function ($carry, \Magento\Quote\Model\Quote\Item $item) {
-            $product = $this->productRepository->getById($item->getData('product_id'));
-
-            return $carry + ($product->getData('shipping_surcharge') * $item->getQty());
-        }, 0);
     }
 }

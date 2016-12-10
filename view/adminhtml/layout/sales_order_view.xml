@@ -1,10 +1,12 @@
 <?xml version="1.0"?>
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
-        <referenceBlock name="order_shipping_view">
-            <action method="setTemplate">
-                <argument name="template" xsi:type="string">SwiftOtter_ShippingSurcharge::info.phtml</argument>
-            </action>
+        <referenceBlock name="order_tab_info">
+            <block class="SwiftOtter\ShippingSurcharge\Block\Adminhtml\Shipping\View" name="order_shipping_view" template="SwiftOtter_ShippingSurcharge::override/shipping/order/view/info.phtml"/>
+            <!-- This is a terrible hack, and I can't wait for suggestions on it.
+             Basically, I'm taking advantage of the fact that layout files
+             are merged to override the original block while keeping the original name
+             -->
         </referenceBlock>
     </body>
 </page>
