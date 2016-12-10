@@ -37,46 +37,6 @@ class InstallSchema implements InstallSchemaInterface
 
     public function install(SchemaSetupInterface $setup, ModuleContextInterface $context)
     {
-//        $setup->getConnection()->addColumn(
-//            $setup->getTable('sales_order'),
-//            'base_shipping_surcharge',
-//            [
-//                'type' => \Magento\Framework\DB\Ddl\Table::TYPE_DECIMAL,
-//                'nullable' => true,
-//                'comment' => 'Base shipping surcharge'
-//            ]
-//        );
-//
-//        $setup->getConnection()->addColumn(
-//            $setup->getTable('sales_order'),
-//            'shipping_surcharge',
-//            [
-//                'type' => \Magento\Framework\DB\Ddl\Table::TYPE_DECIMAL,
-//                'nullable' => true,
-//                'comment' => 'Shipping surcharge'
-//            ]
-//        );
-//
-//        $setup->getConnection()->addColumn(
-//            $setup->getTable('sales_order_item'),
-//            'base_shipping_surcharge',
-//            [
-//                'type' => \Magento\Framework\DB\Ddl\Table::TYPE_DECIMAL,
-//                'nullable' => true,
-//                'comment' => 'Base shipping surcharge'
-//            ]
-//        );
-//
-//        $setup->getConnection()->addColumn(
-//            $setup->getTable('sales_order_item'),
-//            'shipping_surcharge',
-//            [
-//                'type' => \Magento\Framework\DB\Ddl\Table::TYPE_DECIMAL,
-//                'nullable' => true,
-//                'comment' => 'Shipping surcharge'
-//            ]
-//        );
-
         $this->salesSetupResource->addAttribute('order', 'base_shipping_surcharge', [ 'type' => 'decimal' ]);
         $this->salesSetupResource->addAttribute('order', 'shipping_surcharge', [ 'type' => 'decimal' ]);
         $this->salesSetupResource->addAttribute('order_item', 'base_shipping_surcharge', [ 'type' => 'decimal' ]);
