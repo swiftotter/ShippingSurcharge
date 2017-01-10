@@ -3,4 +3,7 @@
     <type name="Magento\Shipping\Model\Shipping">
         <plugin name="add_shipping_surcharge_to_rates" type="\SwiftOtter\ShippingSurcharge\Plugin\MagentoShippingModelShippingPlugin" disabled="false" />
     </type>
+
+    <preference for="SwiftOtter\ShippingSurcharge\Api\Calculator\RateCalculatorInterface" type="SwiftOtter\ShippingSurcharge\Calculator\RateCalculator" />
+    <preference for="SwiftOtter\ShippingSurcharge\Api\Calculator\SurchargeCalculatorInterface" type="SwiftOtter\ShippingSurcharge\Calculator\SurchargeCalculator" />
 </config>

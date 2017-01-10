@@ -21,64 +21,72 @@
 
 namespace SwiftOtter\ShippingSurcharge\Observer;
 
-use Magento\Framework\Event\ObserverInterface;
+use Magento\Framework\Event\{
+    ObserverInterface,
+    Observer as Event
+};
+use Magento\Framework\Model\AbstractExtensibleModel;
+use Magento\Quote\Model\Quote;
+use Magento\Sales\Model\Order;
+use SwiftOtter\ShippingSurcharge\Api\Calculator\SurchargeCalculatorInterface;
+use SwiftOtter\ShippingSurcharge\Config;
 
 class QuoteSubmit implements ObserverInterface
 {
     private $productRepository;
     private $orderRepository;
+    private $configInfo;
+    private $surchargeCalculator;
 
     public function __construct(
         \Magento\Catalog\Api\ProductRepositoryInterface $productRepository,
-        \Magento\Sales\Api\OrderRepositoryInterface $orderRepository
-    )
-    {
+        \Magento\Sales\Api\OrderRepositoryInterface $orderRepository,
+        Config\Info $configInfo,
+        SurchargeCalculatorInterface $surchargeCalculator
+    ) {
         $this->productRepository = $productRepository;
         $this->orderRepository = $orderRepository;
+        $this->configInfo = $configInfo;
+        $this->surchargeCalculator = $surchargeCalculator;
     }
 
-    public function execute(\Magento\Framework\Event\Observer $observer)
+    public function execute(Event $event)
     {
-        $quote = $observer->getData('quote');
-        $order = $observer->getData('order');
+        if ($this->configInfo->isFeatureEnabled()) {
+            $quote = $event->getData('quote');
+            $order = $event->getData('order');
 
-        $this->calculateQuoteTotals($quote);
-        $this->calculateOrderTotals($order);
+            $this->calculateQuoteTotals($quote);
+            $this->calculateOrderTotals($order);
+        }
     }
 
-    private function calculateTotalsFromItems(array $items, bool $setOnItems) : float
+    private function calculateTotalsFromItems(AbstractExtensibleModel ...$items) : float
     {
-        return array_reduce($items, function ($carry, $item) use ($setOnItems) {
-            $itemTotal = $this->getShippingSurcharge($item->getData('product_id'));
+        return array_reduce($items, function (int $acc, AbstractExtensibleModel $item) {
+            $itemTotal = $this->surchargeCalculator->calculateSurchargeForItem($item);
 
-            if ($setOnItems) {
-                $item->setData('base_shipping_surcharge', $itemTotal);
-                $item->setData('shipping_surcharge', $itemTotal);
-            }
+            $item->setData('base_shipping_surcharge', $itemTotal);
+            $item->setData('shipping_surcharge', $itemTotal);
 
-            return $carry + $itemTotal;
+            return $acc + $itemTotal;
         }, 0);
     }
 
-    private function calculateQuoteTotals(\Magento\Quote\Model\Quote $quote)
+    private function calculateQuoteTotals(Quote $quote)
     {
-        $shippingSurcharge = $this->calculateTotalsFromItems($quote->getAllItems(), false);
+        $shippingSurcharge = $this->surchargeCalculator->calculateSurchargeForItems(...$quote->getAllItems());
 
         $quote->setData('shipping_surcharge', $shippingSurcharge);
     }
 
-    private function calculateOrderTotals(\Magento\Sales\Model\Order $order)
+    private function calculateOrderTotals(Order $order)
     {
-        $shippingSurcharge = $this->calculateTotalsFromItems($order->getAllItems(), true);
+        $shippingSurcharge = $this->calculateTotalsFromItems(...$order->getAllItems());
 
         $order->setData('base_shipping_surcharge', $shippingSurcharge);
         $order->setData('shipping_surcharge', $shippingSurcharge);
 
         $this->orderRepository->save($order);
-    }
-
-    private function getShippingSurcharge(int $productId) : float
-    {
-        return (float) $this->productRepository->getById($productId)->getData('shipping_surcharge');
     }
 }
