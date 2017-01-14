@@ -34,18 +34,21 @@ use Magento\Eav\Setup\{
 class InstallData implements InstallDataInterface
 {
     /**
-     * @var \Magento\Eav\Setup\EavSetup
+     * @var \Magento\Eav\Setup\EavSetupFactory
      */
-    private $eavSetup;
+    private $eavSetupFactory;
 
-    public function __construct(EavSetup $eavSetupFactory)
+    public function __construct(EavSetupFactory $eavSetupFactory)
     {
-        $this->eavSetup = $eavSetupFactory;
+        $this->eavSetupFactory = $eavSetupFactory;
     }
 
     public function install(ModuleDataSetupInterface $setup, ModuleContextInterface $context)
     {
-        $this->eavSetup->addAttribute(
+        /** @var EavSetup $eavSetup */
+        $eavSetup = $this->eavSetupFactory->create(['setup' => $setup]);
+
+        $eavSetup->addAttribute(
             \Magento\Catalog\Model\Product::ENTITY,
             'shipping_surcharge',
             [

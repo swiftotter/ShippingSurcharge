@@ -24,23 +24,27 @@ namespace SwiftOtter\ShippingSurcharge\Setup;
 use Magento\Framework\Setup\InstallSchemaInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\SchemaSetupInterface;
-use Magento\Sales\Setup\SalesSetup as SalesSetupResource;
+use Magento\Sales\Setup\SalesSetup;
+use Magento\Sales\Setup\SalesSetupFactory;
 
 class InstallSchema implements InstallSchemaInterface
 {
-    private $salesSetupResource;
+    private $salesSetupFactory;
 
-    public function __construct(SalesSetupResource $salesSetupResource)
+    public function __construct(SalesSetupFactory $salesSetupFactory)
     {
-        $this->salesSetupResource = $salesSetupResource;
+        $this->salesSetupFactory = $salesSetupFactory;
     }
 
     public function install(SchemaSetupInterface $setup, ModuleContextInterface $context)
     {
-        $this->salesSetupResource->addAttribute('order', 'base_shipping_surcharge', [ 'type' => 'decimal' ]);
-        $this->salesSetupResource->addAttribute('order', 'shipping_surcharge', [ 'type' => 'decimal' ]);
-        $this->salesSetupResource->addAttribute('order_item', 'base_shipping_surcharge', [ 'type' => 'decimal' ]);
-        $this->salesSetupResource->addAttribute('order_item', 'shipping_surcharge', [ 'type' => 'decimal' ]);
+        /** @var SalesSetup $salesSetup */
+        $salesSetup = $this->salesSetupFactory->create(['resourceName' => 'sales', 'setup' => $setup]);
+
+        $salesSetup->addAttribute('order', 'base_shipping_surcharge', [ 'type' => 'decimal' ]);
+        $salesSetup->addAttribute('order', 'shipping_surcharge', [ 'type' => 'decimal' ]);
+        $salesSetup->addAttribute('order_item', 'base_shipping_surcharge', [ 'type' => 'decimal' ]);
+        $salesSetup->addAttribute('order_item', 'shipping_surcharge', [ 'type' => 'decimal' ]);
 
         $setup->getConnection()->addColumn(
             $setup->getTable('quote_item'),
