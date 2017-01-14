@@ -15,20 +15,27 @@
  * Copyright: 2013 (c) SwiftOtter Studios
  *
  * @author Tyler Schade
- * @copyright Swift Otter Studios, 11/21/16
+ * @copyright Swift Otter Studios, 11/15/16
  * @package default
  **/
 
 namespace SwiftOtter\ShippingSurcharge\Setup;
 
-use Magento\Framework\Setup\InstallSchemaInterface;
-use Magento\Framework\Setup\ModuleContextInterface;
-use Magento\Framework\Setup\SchemaSetupInterface;
-use Magento\Sales\Setup\SalesSetup;
-use Magento\Sales\Setup\SalesSetupFactory;
+use Magento\Framework\Setup\{
+    ModuleDataSetupInterface,
+    ModuleContextInterface,
+    UpgradeDataInterface
+};
+use Magento\Sales\Setup\{
+    SalesSetup,
+    SalesSetupFactory
+};
 
-class InstallSchema implements InstallSchemaInterface
+class UpgradeData implements UpgradeDataInterface
 {
+    /**
+     * @var \Magento\Sales\Setup\SalesSetupFactory
+     */
     private $salesSetupFactory;
 
     public function __construct(SalesSetupFactory $salesSetupFactory)
@@ -36,24 +43,14 @@ class InstallSchema implements InstallSchemaInterface
         $this->salesSetupFactory = $salesSetupFactory;
     }
 
-    public function install(SchemaSetupInterface $setup, ModuleContextInterface $context)
+    public function upgrade(ModuleDataSetupInterface $setup, ModuleContextInterface $context)
     {
         /** @var SalesSetup $salesSetup */
-        $salesSetup = $this->salesSetupFactory->create(['resourceName' => 'sales', 'setup' => $setup]);
+        $salesSetup = $this->salesSetupFactory->create(['resourceName' => 'sales_setup', 'setup' => $setup]);
 
         $salesSetup->addAttribute('order', 'base_shipping_surcharge', [ 'type' => 'decimal' ]);
         $salesSetup->addAttribute('order', 'shipping_surcharge', [ 'type' => 'decimal' ]);
         $salesSetup->addAttribute('order_item', 'base_shipping_surcharge', [ 'type' => 'decimal' ]);
         $salesSetup->addAttribute('order_item', 'shipping_surcharge', [ 'type' => 'decimal' ]);
-
-        $setup->getConnection()->addColumn(
-            $setup->getTable('quote_item'),
-            'shipping_surcharge',
-            [
-                'type' => \Magento\Framework\DB\Ddl\Table::TYPE_DECIMAL,
-                'nullable' => true,
-                'comment' => 'Shipping surcharge'
-            ]
-        );
     }
 }

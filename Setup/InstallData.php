@@ -31,6 +31,11 @@ use Magento\Eav\Setup\{
     EavSetup
 };
 
+use Magento\Sales\Setup\{
+    SalesSetup,
+    SalesSetupFactory
+};
+
 class InstallData implements InstallDataInterface
 {
     /**
@@ -38,13 +43,28 @@ class InstallData implements InstallDataInterface
      */
     private $eavSetupFactory;
 
-    public function __construct(EavSetupFactory $eavSetupFactory)
+    /**
+     * @var \Magento\Sales\Setup\SalesSetupFactory
+     */
+    private $salesSetupFactory;
+
+    public function __construct(EavSetupFactory $eavSetupFactory, SalesSetupFactory $salesSetupFactory)
     {
         $this->eavSetupFactory = $eavSetupFactory;
+        $this->salesSetupFactory = $salesSetupFactory;
     }
 
     public function install(ModuleDataSetupInterface $setup, ModuleContextInterface $context)
     {
+        /** @var SalesSetup $salesSetup */
+        $salesSetup = $this->salesSetupFactory->create(['resourceName' => 'sales_setup', 'setup' => $setup]);
+
+        $salesSetup->addAttribute('order', 'base_shipping_surcharge', [ 'type' => 'decimal' ]);
+        $salesSetup->addAttribute('order', 'shipping_surcharge', [ 'type' => 'decimal' ]);
+        $salesSetup->addAttribute('order_item', 'base_shipping_surcharge', [ 'type' => 'decimal' ]);
+        $salesSetup->addAttribute('order_item', 'shipping_surcharge', [ 'type' => 'decimal' ]);
+
+
         /** @var EavSetup $eavSetup */
         $eavSetup = $this->eavSetupFactory->create(['setup' => $setup]);
 
