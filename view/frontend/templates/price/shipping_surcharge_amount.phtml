@@ -1,0 +1,15 @@
+<?php
+/**
+ * @by SwiftOtter, Inc., 2/2/17
+ * @website https://swiftotter.com
+ **/
+?>
+
+<?php /** @var SwiftOtter\ShippingSurcharge\Api\Block\Product\ShippingSurchargeAmountInterface $block */ ?>
+
+<?php if ($surcharge = $block->getSurcharge()): ?>
+<span class="surcharge">
+    <span class="surcharge__label"><?php echo $block->getSurchargeLabel(); ?> </span>
+    <span class="surcharge__amount">$<?php echo $block->getSurcharge(); ?></span>
+</span>
+<?php endif; ?>
