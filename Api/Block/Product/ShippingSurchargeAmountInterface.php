@@ -4,7 +4,7 @@
  * @website https://swiftotter.com
  **/
 
-namespace SwiftOtter\ShippingSurcharge\Block\Price;
+namespace SwiftOtter\ShippingSurcharge\Api\Block\Product;
 
 interface ShippingSurchargeAmountInterface
 {

@@ -5,8 +5,11 @@
  **/
 ?>
 
-<?php /** @var SwiftOtter\ShippingSurcharge\Block\Price\ShippingSurchargeAmountInterface $block */ ?>
+<?php /** @var SwiftOtter\ShippingSurcharge\Api\Block\Product\ShippingSurchargeAmountInterface $block */ ?>
 
 <?php if ($surcharge = $block->getSurcharge()): ?>
-<span class="box"><?php echo $block->getSurchargeLabel(); ?> $<?php echo $block->getSurcharge(); ?></span>
+<span class="surcharge">
+    <span class="surcharge__label"><?php echo $block->getSurchargeLabel(); ?> </span>
+    <span class="surcharge__amount">$<?php echo $block->getSurcharge(); ?></span>
+</span>
 <?php endif; ?>

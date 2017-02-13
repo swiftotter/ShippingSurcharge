@@ -4,13 +4,15 @@
  * @website https://swiftotter.com
  **/
 
-namespace SwiftOtter\ShippingSurcharge\Block\Price;
+namespace SwiftOtter\ShippingSurcharge\Block\ShippingSurchargeAmount;
 
 use Magento\Framework\View\Element\Template;
-use Magento\Catalog\Model\Product;
 use Magento\Catalog\Api\ProductRepositoryInterface;
+use Magento\Catalog\Model\Product as CatalogProduct;
+use SwiftOtter\ShippingSurcharge\Api\Block\Product\ShippingSurchargeAmountInterface;
+use SwiftOtter\ShippingSurcharge\Block\ShippingSurchargeAmount;
 
-class ShippingSurchargeAmount extends Template implements ShippingSurchargeAmountInterface
+class Product extends ShippingSurchargeAmount implements ShippingSurchargeAmountInterface
 {
     /** @var \Magento\Catalog\Model\Product */
     private $product;
@@ -25,6 +27,7 @@ class ShippingSurchargeAmount extends Template implements ShippingSurchargeAmoun
     ) {
         parent::__construct($context, $data);
 
+        $this->surchargeLabel = 'Handling';
         $this->productRepository = $productRepository;
         $this->product = $this->loadProduct();
     }
@@ -40,17 +43,7 @@ class ShippingSurchargeAmount extends Template implements ShippingSurchargeAmoun
         return (string) $surcharge;
     }
 
-    public function getSurchargeLabel(): string
-    {
-        return __('Handling: ');
-    }
-
-    private function formatSurcharge(float $amount): string
-    {
-        return sprintf('%.2f', $amount);
-    }
-
-    private function loadProduct(): Product
+    private function loadProduct(): CatalogProduct
     {
         return $this->productRepository->getById($this->getProductIdFromRequest());
     }

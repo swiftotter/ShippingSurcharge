@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <layout xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_layout.xsd">
-    <referenceBlock name="additional.product.info">
-        <block name="additional.product.info.shipping_surcharge" as="shipping_surcharge" class="SwiftOtter\ShippingSurcharge\Block\Price\ShippingSurchargeAmount" template="price/shipping_surcharge_amount.phtml" />
+    <referenceBlock name="checkout.cart.item.renderers">
+        <block name="checkout.cart.item.shipping_surcharge" as="shipping_surcharge" class="SwiftOtter\ShippingSurcharge\Block\ShippingSurchargeAmount\Cart\Item" template="price/shipping_surcharge_amount.phtml" />
     </referenceBlock>
 </layout>
