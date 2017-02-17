@@ -15,12 +15,21 @@ abstract class ShippingSurchargeAmount extends Template implements ShippingSurch
      * @var string
      */
     protected $surchargeLabel;
+    private $priceCurrency;
 
-    abstract public function getSurcharge(): string;
+    public function __construct(
+        Template\Context $context,
+        \Magento\Framework\Pricing\PriceCurrencyInterface $priceCurrency,
+        array $data = []
+        )
+    {
+        $this->priceCurrency = $priceCurrency;
+        parent::__construct($context, $data);
+    }
 
     protected function formatSurcharge(float $amount): string
     {
-        return sprintf('%.2f', $amount);
+        return $this->priceCurrency->convertAndFormat($amount, false);
     }
 
     public function getSurchargeLabel(): string

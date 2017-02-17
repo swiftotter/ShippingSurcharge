@@ -19,6 +19,11 @@ class Item extends ShippingSurchargeAmount implements ShippingSurchargeAmountInt
 
     protected $surchargeLabel = 'Handling';
 
+    public function hasSurcharge(): bool
+    {
+        return (bool) $this->quoteItem->getProduct()->getData('shipping_surcharge');
+    }
+
     public function getSurcharge(): string
     {
         return $this->formatSurcharge($this->quoteItem->getProduct()->getData('shipping_surcharge') * $this->quoteItem->getQty());
