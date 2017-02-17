@@ -23,13 +23,19 @@ class Product extends ShippingSurchargeAmount implements ShippingSurchargeAmount
     public function __construct(
         ProductRepositoryInterface $productRepository,
         Template\Context $context,
+        \Magento\Framework\Pricing\PriceCurrencyInterface $priceCurrency,
         array $data = []
     ) {
-        parent::__construct($context, $data);
+        parent::__construct($context, $priceCurrency, $data);
 
         $this->surchargeLabel = 'Handling';
         $this->productRepository = $productRepository;
         $this->product = $this->loadProduct();
+    }
+
+    public function hasSurcharge(): bool
+    {
+        return (bool) $this->product->getData('shipping_surcharge');
     }
 
     public function getSurcharge(): string

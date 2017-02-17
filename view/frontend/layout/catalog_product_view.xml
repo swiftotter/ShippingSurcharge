@@ -3,4 +3,8 @@
     <referenceBlock name="product.info.addtocart">
         <block name="product.info.addtocart.shipping_surcharge" as="shipping_surcharge" class="SwiftOtter\ShippingSurcharge\Block\ShippingSurchargeAmount\Product" template="price/shipping_surcharge_amount.phtml" />
     </referenceBlock>
+
+    <referenceBlock name="product.info.addtocart.additional">
+        <block name="product.info.addtocart.shipping_surcharge" as="shipping_surcharge" class="SwiftOtter\ShippingSurcharge\Block\ShippingSurchargeAmount\Product" template="price/shipping_surcharge_amount.phtml" />
+    </referenceBlock>
 </layout>
