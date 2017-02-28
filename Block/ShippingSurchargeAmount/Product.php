@@ -28,7 +28,7 @@ class Product extends ShippingSurchargeAmount implements ShippingSurchargeAmount
     ) {
         parent::__construct($context, $priceCurrency, $data);
 
-        $this->surchargeLabel = 'Handling';
+        $this->surchargeLabel = 'Additional Shipping Charge';
         $this->productRepository = $productRepository;
         $this->product = $this->loadProduct();
     }
