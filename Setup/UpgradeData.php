@@ -21,6 +21,7 @@
 
 namespace SwiftOtter\ShippingSurcharge\Setup;
 
+use Magento\Cms\Model\BlockFactory;
 use Magento\Framework\Setup\{
     ModuleDataSetupInterface,
     ModuleContextInterface,
@@ -33,14 +34,19 @@ use Magento\Sales\Setup\{
 
 class UpgradeData implements UpgradeDataInterface
 {
+    private $blockFactory;
     /**
      * @var \Magento\Sales\Setup\SalesSetupFactory
      */
     private $salesSetupFactory;
 
-    public function __construct(SalesSetupFactory $salesSetupFactory)
+    public function __construct(
+        SalesSetupFactory $salesSetupFactory,
+        BlockFactory $blockFactory
+    )
     {
         $this->salesSetupFactory = $salesSetupFactory;
+        $this->blockFactory = $blockFactory;
     }
 
     public function upgrade(ModuleDataSetupInterface $setup, ModuleContextInterface $context)
@@ -48,9 +54,15 @@ class UpgradeData implements UpgradeDataInterface
         /** @var SalesSetup $salesSetup */
         $salesSetup = $this->salesSetupFactory->create(['resourceName' => 'sales_setup', 'setup' => $setup]);
 
-        $salesSetup->addAttribute('order', 'base_shipping_surcharge', [ 'type' => 'decimal' ]);
-        $salesSetup->addAttribute('order', 'shipping_surcharge', [ 'type' => 'decimal' ]);
-        $salesSetup->addAttribute('order_item', 'base_shipping_surcharge', [ 'type' => 'decimal' ]);
-        $salesSetup->addAttribute('order_item', 'shipping_surcharge', [ 'type' => 'decimal' ]);
+        if (version_compare($context->getVersion(), 1.2) === ModuleDataSetupInterface::VERSION_COMPARE_LOWER) {
+            $salesSetup->addAttribute('order', 'base_shipping_surcharge', [ 'type' => 'decimal' ]);
+            $salesSetup->addAttribute('order', 'shipping_surcharge', [ 'type' => 'decimal' ]);
+            $salesSetup->addAttribute('order_item', 'base_shipping_surcharge', [ 'type' => 'decimal' ]);
+            $salesSetup->addAttribute('order_item', 'shipping_surcharge', [ 'type' => 'decimal' ]);
+        }
+
+        if (version_compare($context->getVersion(), 1.3) === ModuleDataSetupInterface::VERSION_COMPARE_LOWER) {
+            $this->blockFactory->create()->setData((new Definition\ExplanatoryNoteStaticBlock())->getData())->save();
+        }
     }
 }

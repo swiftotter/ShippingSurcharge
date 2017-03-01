@@ -5,11 +5,29 @@
  **/
 ?>
 
-<?php /** @var SwiftOtter\ShippingSurcharge\Api\Block\Product\ShippingSurchargeAmountInterface $block */ ?>
+<?php /** @var SwiftOtter\ShippingSurcharge\Block\ShippingSurchargeAmount $block */ ?>
 
 <?php if ($block->hasSurcharge()): ?>
-<span class="surcharge">
+<span class="surcharge" data-bind="scope: 'surcharge'">
     <span class="surcharge__label"><?php echo $block->getSurchargeLabel(); ?> </span>
     <span class="surcharge__amount"><?php echo $block->getSurcharge(); ?></span>
+    <span class="surcharge__tooltip"><!-- ko template: 'ui/form/element/helper/tooltip' --><!-- /ko --></span>
 </span>
+<script type="text/x-magento-init">
+   {
+        ".surcharge": {
+            "Magento_Ui/js/core/app": {
+                "components": {
+                    "surcharge": {
+                        "tooltip": {
+                            "link": "<?php echo $block->getUrl('shippinginfo'); ?>",
+                            "description": "<?php echo $block->escapeJsQuote($block->getSurchargeNote(), "\\'"); ?>"
+                        },
+                        "component": "uiElement"
+                    }
+                }
+            }
+        }
+   }
+</script>
 <?php endif; ?>
