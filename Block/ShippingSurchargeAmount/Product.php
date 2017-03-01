@@ -24,11 +24,13 @@ class Product extends ShippingSurchargeAmount implements ShippingSurchargeAmount
         ProductRepositoryInterface $productRepository,
         Template\Context $context,
         \Magento\Framework\Pricing\PriceCurrencyInterface $priceCurrency,
+        \Magento\Cms\Api\BlockRepositoryInterface $blockRepository,
+        \Magento\Cms\Model\Template\FilterProvider $filterProvider,
         array $data = []
     ) {
-        parent::__construct($context, $priceCurrency, $data);
+        parent::__construct($context, $priceCurrency, $blockRepository, $filterProvider, $data);
 
-        $this->surchargeLabel = 'Handling';
+        $this->surchargeLabel = 'Additional Shipping Charge';
         $this->productRepository = $productRepository;
         $this->product = $this->loadProduct();
     }

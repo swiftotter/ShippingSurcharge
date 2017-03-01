@@ -17,7 +17,7 @@ class Item extends ShippingSurchargeAmount implements ShippingSurchargeAmountInt
      */
     private $quoteItem;
 
-    protected $surchargeLabel = 'Handling';
+    protected $surchargeLabel = 'Additional Shipping Charge';
 
     public function hasSurcharge(): bool
     {
