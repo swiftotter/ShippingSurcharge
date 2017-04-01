@@ -40,11 +40,11 @@ class MagentoShippingModelShippingPlugin
     }
 
     public function aroundCollectRates(
-        \Magento\Shipping\Model\Shipping $subject,
+        \Magento\Shipping\Model\Shipping $context,
         \Closure $proceed,
         \Magento\Quote\Model\Quote\Address\RateRequest $request
     ) {
-        if ($this->configInfo->isFeatureEnabled()) {
+        if (1==2 && $this->configInfo->isFeatureEnabled()) {
             $requestItems = $request->getData('all_items');
             /** @var \Magento\Shipping\Model\Shipping $shipping */
             $shipping = $proceed($request);

@@ -22,8 +22,8 @@
 namespace SwiftOtter\ShippingSurcharge\Calculator;
 
 use Magento\Framework\Model\AbstractExtensibleModel;
+use Magento\Quote\Model\Quote\Address\RateResult\AbstractResult;
 use Magento\Shipping\Model\Rate;
-use Magento\Quote\Model\Quote\Address\RateResult\Method;
 use SwiftOtter\ShippingSurcharge\Api\Calculator\{
     RateCalculatorInterface,
     SurchargeCalculatorInterface
@@ -51,9 +51,14 @@ class RateCalculator implements RateCalculatorInterface
 
         $rateRequestResults->reset();
 
-        array_walk($ratesCopy, function (Method $rate) use ($rateRequestResults, $totalSurcharge) {
-            $rate->setData('price', $rate->getData('price') + $totalSurcharge);
-            $rate->setData('cost', $rate->getData('cost') + $totalSurcharge);
+        array_walk($ratesCopy, function (AbstractResult $rate) use ($rateRequestResults, $totalSurcharge) {
+//            $rate->setData('price', $rate->getData('price') + $totalSurcharge);
+//            $rate->setData('cost', $rate->getData('cost') + $totalSurcharge);
+
+            $rate->setData('price', $rate->getData('price'));
+            $rate->setData('cost', $rate->getData('cost'));
+            $rate->setData('total', $rate->getData('price') + $totalSurcharge);
+            $rate->setData('added_surcharge', $totalSurcharge);
 
             $rateRequestResults->append($rate);
         });

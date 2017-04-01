@@ -1,0 +1,10 @@
+<!-- ko if: hasSurcharge() -->
+<tr class="totals surcharge">
+    <th class="mark">
+        <span class="label" data-bind="i18n: title"></span>
+    </th>
+    <td class="amount">
+        <span class="price" data-bind="text: getSurchargeValue(), attr: {'data-th': title}"></span>
+    </td>
+</tr>
+<!-- /ko -->

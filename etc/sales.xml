@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Sales:etc/sales.xsd">
+    <section name="quote">
+        <group name="totals">
+            <item name="surcharge" instance="SwiftOtter\ShippingSurcharge\Model\Quote\Address\Total\Surcharge" sort_order="280"/>
+        </group>
+    </section>
+</config>

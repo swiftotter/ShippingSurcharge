@@ -6,5 +6,10 @@
                 <is_enabled>0</is_enabled>
             </general>
         </shipping_surcharge>
+        <sales>
+            <totals_sort>
+                <surcharge>35</surcharge>
+            </totals_sort>
+        </sales>
     </default>
 </config>

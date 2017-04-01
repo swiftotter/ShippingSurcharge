@@ -6,4 +6,8 @@
 
     <preference for="SwiftOtter\ShippingSurcharge\Api\Calculator\RateCalculatorInterface" type="SwiftOtter\ShippingSurcharge\Calculator\RateCalculator" />
     <preference for="SwiftOtter\ShippingSurcharge\Api\Calculator\SurchargeCalculatorInterface" type="SwiftOtter\ShippingSurcharge\Calculator\SurchargeCalculator" />
+
+    <type name="Magento\Quote\Model\Cart\TotalsConverter">
+        <plugin name="add_surcharge_details" type="SwiftOtter\ShippingSurcharge\Plugin\Model\TotalsConverter" sortOrder="50"/>
+    </type>
 </config>
