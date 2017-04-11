@@ -31,6 +31,7 @@ use Magento\Sales\Setup\{
     SalesSetup,
     SalesSetupFactory
 };
+use \SwiftOtter\ShippingSurcharge\Model\Surcharge;
 
 class UpgradeData implements UpgradeDataInterface
 {
@@ -55,14 +56,27 @@ class UpgradeData implements UpgradeDataInterface
         $salesSetup = $this->salesSetupFactory->create(['resourceName' => 'sales_setup', 'setup' => $setup]);
 
         if (version_compare($context->getVersion(), 1.2) === ModuleDataSetupInterface::VERSION_COMPARE_LOWER) {
-            $salesSetup->addAttribute('order', 'base_shipping_surcharge', [ 'type' => 'decimal' ]);
-            $salesSetup->addAttribute('order', 'shipping_surcharge', [ 'type' => 'decimal' ]);
-            $salesSetup->addAttribute('order_item', 'base_shipping_surcharge', [ 'type' => 'decimal' ]);
-            $salesSetup->addAttribute('order_item', 'shipping_surcharge', [ 'type' => 'decimal' ]);
+            $salesSetup->addAttribute('order', Surcharge::BASE_SURCHARGE, ['type' => 'decimal' ]);
+            $salesSetup->addAttribute('order', Surcharge::SURCHARGE, ['type' => 'decimal' ]);
+            $salesSetup->addAttribute('order_item', Surcharge::BASE_SURCHARGE, ['type' => 'decimal' ]);
+            $salesSetup->addAttribute('order_item', Surcharge::SURCHARGE, ['type' => 'decimal' ]);
         }
 
         if (version_compare($context->getVersion(), 1.3) === ModuleDataSetupInterface::VERSION_COMPARE_LOWER) {
             $this->blockFactory->create()->setData((new Definition\ExplanatoryNoteStaticBlock())->getData())->save();
+        }
+
+        if (version_compare($context->getVersion(), 1.6) === ModuleDataSetupInterface::VERSION_COMPARE_LOWER) {
+            $salesSetup = $this->salesSetupFactory->create(['resourceName' => 'sales_setup', 'setup' => $setup]);
+            $salesSetup->addAttribute('invoice', Surcharge::BASE_SURCHARGE, ['type' => 'decimal']);
+            $salesSetup->addAttribute('invoice', Surcharge::SURCHARGE, ['type' => 'decimal']);
+            $salesSetup->addAttribute('invoice_item', Surcharge::BASE_SURCHARGE, ['type' => 'decimal']);
+            $salesSetup->addAttribute('invoice_item', Surcharge::SURCHARGE, ['type' => 'decimal']);
+
+            $salesSetup->addAttribute('creditmemo', Surcharge::BASE_SURCHARGE, ['type' => 'decimal']);
+            $salesSetup->addAttribute('creditmemo', Surcharge::SURCHARGE, ['type' => 'decimal']);
+            $salesSetup->addAttribute('creditmemo_item', Surcharge::BASE_SURCHARGE, ['type' => 'decimal']);
+            $salesSetup->addAttribute('creditmemo_item', Surcharge::SURCHARGE, ['type' => 'decimal']);
         }
     }
 }

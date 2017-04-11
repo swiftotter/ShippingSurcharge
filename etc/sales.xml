@@ -5,4 +5,16 @@
             <item name="surcharge" instance="SwiftOtter\ShippingSurcharge\Model\Quote\Address\Total\Surcharge" sort_order="280"/>
         </group>
     </section>
+
+    <section name="order_invoice">
+        <group name="totals">
+            <item name="surcharge" instance="SwiftOtter\ShippingSurcharge\Model\Order\Invoice\Total\Surcharge" sort_order="180"/>
+        </group>
+    </section>
+
+    <section name="order_creditmemo">
+        <group name="totals">
+            <item name="surcharge" instance="SwiftOtter\ShippingSurcharge\Model\Order\Creditmemo\Total\Shipping" sort_order="230"/>
+        </group>
+    </section>
 </config>

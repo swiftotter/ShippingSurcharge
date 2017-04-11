@@ -5,20 +5,36 @@
 define([
     'jquery',
     'Magento_Checkout/js/view/summary/abstract-total',
-    'Magento_Checkout/js/model/quote'
-], function($, Component, quote) {
+    'Magento_Checkout/js/model/quote',
+    'Magento_Checkout/js/model/totals'
+], function($, Component, quote, totals) {
     return Component.extend({
         quote: quote,
         totals: quote.getTotals(),
 
+        formattedSurchargeValue: function () {
+            return this.getFormattedPrice(this.getSurchargeValue());
+        },
+
         hasSurcharge: function () {
-            return true
+            return !!this.getSurchargeValue();
         },
 
         getSurchargeValue: function() {
+            var surcharge = totals.getSegment('surcharge');
+            console.log(surcharge);
+            console.log('Looking for surcharge');
+
             console.log(this.totals());
-            console.log('Amount: ' + this.totals().surcharge_amount);
-            return this.totals().surcharge_amount || 'N/A';
+            console.log(this.quote);
+
+            if (surcharge && surcharge.value) {
+                return surcharge.value;
+            }
+
+            console.log('No surcharge found');
+
+            return 0;
         }
     });
 });

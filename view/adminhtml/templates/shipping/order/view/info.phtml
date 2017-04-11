@@ -1,0 +1,34 @@
+<?php
+/**
+ * SwiftOtter_Base is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * SwiftOtter_Base is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with SwiftOtter_Base. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Copyright: 2013 (c) SwiftOtter Studios
+ *
+ * @author Tyler Schade
+ * @copyright Swift Otter Studios, 11/21/16
+ * @package default
+ **/
+?>
+<?php /** @var SwiftOtter\ShippingSurcharge\Block\Adminhtml\Shipping\View $block */ ?>
+<?php $order = $block->getOrder() ?>
+<?php if ($order->getIsVirtual()) : return '';endif; ?>
+
+<?php /* Surcharge */ ?>
+<div class="admin__page-section-item order-shipping-method">
+    <div class="admin__page-section-item-content">
+        <?php if ($block->isShippingSurchargeEnabled()): ?>
+            <strong><?php echo __('Additional Shipping Charge:'); ?></strong>
+            <?php echo $this->helper('Magento\Framework\Pricing\Helper\Data')->currency($order->getData('shipping_surcharge'), true); ?>
+        <?php endif; ?>
+    </div>
+</div>

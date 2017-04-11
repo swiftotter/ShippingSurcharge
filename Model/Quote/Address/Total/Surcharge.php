@@ -6,6 +6,7 @@
 
 namespace SwiftOtter\ShippingSurcharge\Model\Quote\Address\Total;
 
+use \SwiftOtter\ShippingSurcharge\Model\Surcharge as SurchargeModel;
 
 class Surcharge extends \Magento\Quote\Model\Quote\Address\Total\AbstractTotal
 {
@@ -22,19 +23,19 @@ class Surcharge extends \Magento\Quote\Model\Quote\Address\Total\AbstractTotal
     /**
      * @var \Magento\Quote\Api\Data\TotalSegmentExtensionFactory
      */
-    private $totalSegmentExtensionFactory;
+    private $cartExtensionFactory;
 
 
     public function __construct(
         \Magento\Framework\Pricing\PriceCurrencyInterface $priceCurrency,
         \SwiftOtter\ShippingSurcharge\Api\Calculator\SurchargeCalculatorInterface $surchargeCalculator,
-        \Magento\Quote\Api\Data\ShippingAssignmentExtensionFactory $shippingAssignmentExtensionFactory
+        \Magento\Quote\Api\Data\CartExtensionFactory $cartExtensionFactory
     )
     {
         $this->setCode('surcharge');
         $this->priceCurrency = $priceCurrency;
         $this->surchargeCalculator = $surchargeCalculator;
-        $this->totalSegmentExtensionFactory = $shippingAssignmentExtensionFactory;
+        $this->cartExtensionFactory = $cartExtensionFactory;
     }
 
     public function collect(
@@ -49,13 +50,9 @@ class Surcharge extends \Magento\Quote\Model\Quote\Address\Total\AbstractTotal
         if ($surchargeAmount) {
             $store = $quote->getStore();
 
-            $total->setData('surcharge_amount', $surchargeAmount);
+            $total->setData(SurchargeModel::SURCHARGE, $surchargeAmount);
             $total->setTotalAmount($this->getCode(), $this->priceCurrency->convert($surchargeAmount, $store));
             $total->setBaseTotalAmount($this->getCode(), $surchargeAmount);
-
-            $attributes = $this->totalSegmentExtensionFactory->create();
-            $attributes->setData('surcharge_amount', $surchargeAmount);
-            $shippingAssignment->setExtensionAttributes($attributes);
         }
 
 
@@ -64,10 +61,12 @@ class Surcharge extends \Magento\Quote\Model\Quote\Address\Total\AbstractTotal
 
     public function fetch(\Magento\Quote\Model\Quote $quote, \Magento\Quote\Model\Quote\Address\Total $total)
     {
+        $surchargeAmount = $total->getData(SurchargeModel::SURCHARGE) ?? $quote->getData(SurchargeModel::SURCHARGE);
+
         return [
             'code' => $this->getCode(),
             'title' => $this->getLabel(),
-            'value' => $total->getData('surcharge_amount')
+            'value' => $surchargeAmount
         ];
     }
 
