@@ -21,7 +21,7 @@ define([
         },
 
         getSurchargeValue: function() {
-            var surcharge = totals.getSegment('surcharge');
+            var surcharge = totals.getSegment('shipping_surcharge');
             console.log(surcharge);
             console.log('Looking for surcharge');
 

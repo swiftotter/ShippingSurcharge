@@ -28,7 +28,7 @@
     <div class="admin__page-section-item-content">
         <?php if ($block->isShippingSurchargeEnabled()): ?>
             <strong><?php echo __('Additional Shipping Charge:'); ?></strong>
-            <?php echo $this->helper('Magento\Framework\Pricing\Helper\Data')->currency($order->getData('shipping_surcharge'), true); ?>
+            <?php echo $this->helper('Magento\Framework\Pricing\Helper\Data')->currency($order->getData(\SwiftOtter\ShippingSurcharge\Model\Surcharge::SURCHARGE), true); ?>
         <?php endif; ?>
     </div>
 </div>

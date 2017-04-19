@@ -30,6 +30,7 @@ use Magento\Quote\Model\Quote;
 use Magento\Sales\Model\Order;
 use SwiftOtter\ShippingSurcharge\Api\Calculator\SurchargeCalculatorInterface;
 use SwiftOtter\ShippingSurcharge\Config;
+use SwiftOtter\ShippingSurcharge\Model\Surcharge;
 
 class QuoteSubmit implements ObserverInterface
 {
@@ -66,8 +67,8 @@ class QuoteSubmit implements ObserverInterface
         return array_reduce($items, function (int $acc, AbstractExtensibleModel $item) {
             $itemTotal = $this->surchargeCalculator->calculateSurchargeForItem($item);
 
-            $item->setData('base_shipping_surcharge', $itemTotal);
-            $item->setData('shipping_surcharge', $itemTotal);
+            $item->setData(Surcharge::BASE_SURCHARGE, $itemTotal);
+            $item->setData(Surcharge::SURCHARGE, $itemTotal);
 
             return $acc + $itemTotal;
         }, 0);
@@ -77,15 +78,15 @@ class QuoteSubmit implements ObserverInterface
     {
         $shippingSurcharge = $this->surchargeCalculator->calculateSurchargeForItems(...$quote->getAllItems());
 
-        $quote->setData('shipping_surcharge', $shippingSurcharge);
+        $quote->setData(Surcharge::SURCHARGE, $shippingSurcharge);
     }
 
     private function calculateOrderTotals(Order $order)
     {
         $shippingSurcharge = $this->calculateTotalsFromItems(...$order->getAllItems());
 
-        $order->setData('base_shipping_surcharge', $shippingSurcharge);
-        $order->setData('shipping_surcharge', $shippingSurcharge);
+        $order->setData(Surcharge::BASE_SURCHARGE, $shippingSurcharge);
+        $order->setData(Surcharge::SURCHARGE, $shippingSurcharge);
 
         $this->orderRepository->save($order);
     }

@@ -32,7 +32,7 @@ class Surcharge extends \Magento\Quote\Model\Quote\Address\Total\AbstractTotal
         \Magento\Quote\Api\Data\CartExtensionFactory $cartExtensionFactory
     )
     {
-        $this->setCode('surcharge');
+        $this->setCode(SurchargeModel::SURCHARGE);
         $this->priceCurrency = $priceCurrency;
         $this->surchargeCalculator = $surchargeCalculator;
         $this->cartExtensionFactory = $cartExtensionFactory;
@@ -45,29 +45,48 @@ class Surcharge extends \Magento\Quote\Model\Quote\Address\Total\AbstractTotal
     ) {
         parent::collect($quote, $shippingAssignment, $total);
 
-        $surchargeAmount = $this->surchargeCalculator->calculateSurchargeForItems(...$quote->getAllItems());
+        $surchargeAmount = $this->calculateSurcharge($quote);
 
         if ($surchargeAmount) {
             $store = $quote->getStore();
 
-            $total->setData(SurchargeModel::SURCHARGE, $surchargeAmount);
-            $total->setTotalAmount($this->getCode(), $this->priceCurrency->convert($surchargeAmount, $store));
-            $total->setBaseTotalAmount($this->getCode(), $surchargeAmount);
+            $quote->setData(SurchargeModel::SURCHARGE, $surchargeAmount);
+
+            $total->setTotalAmount(SurchargeModel::SURCHARGE, $this->priceCurrency->convert($surchargeAmount, $store));
+            $total->setBaseTotalAmount(SurchargeModel::SURCHARGE, $surchargeAmount);
         }
 
 
         return $this;
     }
 
+    private function calculateSurcharge(\Magento\Quote\Model\Quote $quote)
+    {
+        return $this->surchargeCalculator->calculateSurchargeForItems(...$quote->getAllItems());
+    }
+
     public function fetch(\Magento\Quote\Model\Quote $quote, \Magento\Quote\Model\Quote\Address\Total $total)
     {
-        $surchargeAmount = $total->getData(SurchargeModel::SURCHARGE) ?? $quote->getData(SurchargeModel::SURCHARGE);
+        $surchargeAmount = $this->loadSurchargeAmount($quote, $total);
 
         return [
             'code' => $this->getCode(),
             'title' => $this->getLabel(),
             'value' => $surchargeAmount
         ];
+    }
+
+    private function loadSurchargeAmount(\Magento\Quote\Model\Quote $quote, \Magento\Quote\Model\Quote\Address\Total $total)
+    {
+        if ($total->getTotalAmount(SurchargeModel::SURCHARGE)) {
+            return $total->getTotalAmount(SurchargeModel::SURCHARGE);
+        }
+
+        if ($quote->getData(SurchargeModel::SURCHARGE)) {
+            return $quote->getData(SurchargeModel::SURCHARGE);
+        }
+
+        return $this->calculateSurcharge($quote);
     }
 
     public function getLabel()
