@@ -14,7 +14,7 @@
 
     <section name="order_creditmemo">
         <group name="totals">
-            <item name="shipping_surcharge" instance="SwiftOtter\ShippingSurcharge\Model\Order\Creditmemo\Total\Shipping" sort_order="230"/>
+            <item name="shipping_surcharge" instance="SwiftOtter\ShippingSurcharge\Model\Order\Creditmemo\Total\Surcharge" sort_order="230"/>
         </group>
     </section>
 </config>

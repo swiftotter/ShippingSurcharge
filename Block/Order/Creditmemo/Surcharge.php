@@ -4,30 +4,23 @@
  * @website https://swiftotter.com
  **/
 
-namespace SwiftOtter\ShippingSurcharge\Block\Adminhtml\Order;
+namespace SwiftOtter\ShippingSurcharge\Block\Order\Creditmemo;
 
-
-class Surcharge extends \Magento\Sales\Block\Adminhtml\Order\Totals
+class Surcharge extends \Magento\Sales\Block\Order\Creditmemo\Totals
 {
     use \SwiftOtter\ShippingSurcharge\Block\SurchargeTotal;
 
     private $configInfo;
 
-    /**
-     * @var \Magento\Framework\DataObject
-     */
-    protected $source;
-
     public function __construct(
         \Magento\Framework\View\Element\Template\Context $context,
         \Magento\Framework\Registry $registry,
-        \Magento\Sales\Helper\Admin $adminHelper,
         \SwiftOtter\ShippingSurcharge\Config\Info $configInfo,
         array $data = []
     )
     {
+        parent::__construct($context, $registry, $data);
         $this->configInfo = $configInfo;
-        parent::__construct($context, $registry, $adminHelper, $data);
     }
 
     public function initTotals()

@@ -4,15 +4,15 @@
  * @website https://swiftotter.com
  **/
 
-namespace SwiftOtter\ShippingSurcharge\Block\ShippingSurchargeAmount;
+namespace SwiftOtter\ShippingSurcharge\Block\Product;
 
 use Magento\Framework\View\Element\Template;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Catalog\Model\Product as CatalogProduct;
 use SwiftOtter\ShippingSurcharge\Api\Block\Product\ShippingSurchargeAmountInterface;
-use SwiftOtter\ShippingSurcharge\Block\ShippingSurchargeAmount;
+use SwiftOtter\ShippingSurcharge\Block\ItemSurcharge;
 
-class Product extends ShippingSurchargeAmount implements ShippingSurchargeAmountInterface
+class Catalog extends ItemSurcharge implements ShippingSurchargeAmountInterface
 {
     /** @var \Magento\Catalog\Model\Product */
     private $product;

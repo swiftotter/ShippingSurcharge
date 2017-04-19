@@ -59,7 +59,6 @@ class EdgeToEdgeTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @magentoDataFixture Magento/Catalog/_files/product_simple_duplicated.php
      * @magentoDataFixture Magento/Checkout/_files/active_quote.php
      */
     public function testSurchargeAppliesToOneProduct()
@@ -90,6 +89,31 @@ class EdgeToEdgeTest extends \PHPUnit_Framework_TestCase
 
         $quote = $this->getMockQuote($products);
         $totals = $quote->getTotals();
+
+        $this->assertEquals(array_sum($surchargeAmounts), $totals[Surcharge::SURCHARGE]->getValue());
+        $this->assertEquals(((count($surchargeAmounts) * 10) + array_sum($surchargeAmounts)), $quote->getGrandTotal());
+    }
+
+    /**
+     * TODO: build out order submission
+     *
+     * @magentoDataFixture Magento/Customer/_files/customer.php
+     * @magentoDataFixture Magento/Customer/_files/customer_address.php
+     */
+    public function testSurchargeAppliesThroughOrder()
+    {
+        $quoteManagement = $this->objectManager->create(\Magento\Quote\Model\QuoteManagement::class);
+
+        $surchargeAmounts = [21.19, 1, 12.82];
+
+        $products = array_map(function($surcharge, $key) {
+            return $this->getMockProduct($key, $surcharge);
+        }, $surchargeAmounts, array_keys($surchargeAmounts));
+
+        $quote = $this->getMockQuote($products);
+        $totals = $quote->getTotals();
+
+//        $quoteManagement->submit($quote);
 
         $this->assertEquals(array_sum($surchargeAmounts), $totals[Surcharge::SURCHARGE]->getValue());
         $this->assertEquals(((count($surchargeAmounts) * 10) + array_sum($surchargeAmounts)), $quote->getGrandTotal());

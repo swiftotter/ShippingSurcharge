@@ -2,4 +2,8 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <preference for="SwiftOtter\ShippingSurcharge\Api\Calculator\RateCalculatorInterface" type="SwiftOtter\ShippingSurcharge\Calculator\RateCalculator"/>
     <preference for="SwiftOtter\ShippingSurcharge\Api\Calculator\SurchargeCalculatorInterface" type="SwiftOtter\ShippingSurcharge\Calculator\SurchargeCalculator"/>
+
+    <type name="Magento\Sales\Model\Order\Creditmemo\Item">
+        <plugin name="so_credit_memo_item" type="SwiftOtter\ShippingSurcharge\Model\Order\Creditmemo\ItemPlugin" sortOrder="50"/>
+    </type>
 </config>

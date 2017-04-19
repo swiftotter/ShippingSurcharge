@@ -1,13 +1,12 @@
 <?php
 /**
- * @by SwiftOtter, Inc. 4/19/17
+ * @by SwiftOtter, Inc. 4/11/17
  * @website https://swiftotter.com
  **/
 
-namespace SwiftOtter\ShippingSurcharge\Block\Adminhtml\Order;
+namespace SwiftOtter\ShippingSurcharge\Block\Adminhtml\Order\Invoice;
 
-
-class Surcharge extends \Magento\Sales\Block\Adminhtml\Order\Totals
+class Surcharge extends \Magento\Sales\Block\Adminhtml\Order\Invoice\Totals
 {
     use \SwiftOtter\ShippingSurcharge\Block\SurchargeTotal;
 

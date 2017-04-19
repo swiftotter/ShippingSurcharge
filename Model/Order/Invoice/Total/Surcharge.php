@@ -12,24 +12,31 @@ class Surcharge extends \Magento\Sales\Model\Order\Invoice\Total\AbstractTotal
 {
     public function collect(\Magento\Sales\Model\Order\Invoice $invoice)
     {
-        $invoice->setData(SurchargeModel::SURCHARGE, 0);
-        $invoice->setData(SurchargeModel::BASE_SURCHARGE, 0);
+        $surcharge = 0;
+        $baseSurcharge = 0;
 
-        $orderSurchargeAmount = $invoice->getOrder()->getData(SurchargeModel::SURCHARGE);
-        $baseOrderSurchargeAmount = $invoice->getOrder()->getData(SurchargeModel::BASE_SURCHARGE);
+        /** @var \Magento\Sales\Model\Order\Invoice\Item $item */
+        foreach ($invoice->getAllItems() as $item) {
+            $orderItem = $item->getOrderItem();
+            $orderItemQty = $orderItem->getQtyOrdered();
 
-        if ($orderSurchargeAmount) {
-            foreach ($invoice->getOrder()->getInvoiceCollection() as $previousInvoice) {
-                if ((double)$previousInvoice->getData(SurchargeModel::SURCHARGE) && !$previousInvoice->isCanceled()) {
-                    return $this;
-                }
+            if (!$orderItemQty || $orderItem->isDummy() || $item->getQty() < 1) {
+                continue;
             }
-            $invoice->setData(SurchargeModel::SURCHARGE, $orderSurchargeAmount);
-            $invoice->setData(SurchargeModel::BASE_SURCHARGE, $baseOrderSurchargeAmount);
 
-            $invoice->setGrandTotal($invoice->getGrandTotal() + $orderSurchargeAmount);
-            $invoice->setBaseGrandTotal($invoice->getBaseGrandTotal() + $baseOrderSurchargeAmount);
+            $item->setData(SurchargeModel::SURCHARGE, $orderItem->getData(SurchargeModel::SURCHARGE));
+            $item->setData(SurchargeModel::BASE_SURCHARGE, $orderItem->getData(SurchargeModel::BASE_SURCHARGE));
+
+            $surcharge += $item->getData(SurchargeModel::SURCHARGE);
+            $baseSurcharge += $item->getData(SurchargeModel::BASE_SURCHARGE);
         }
+
+        $invoice->setData(SurchargeModel::SURCHARGE, $surcharge);
+        $invoice->setData(SurchargeModel::BASE_SURCHARGE, $baseSurcharge);
+
+        $invoice->setGrandTotal($invoice->getGrandTotal() + $surcharge);
+        $invoice->setBaseGrandTotal($invoice->getBaseGrandTotal() + $baseSurcharge);
+
         return $this;
     }
 }
