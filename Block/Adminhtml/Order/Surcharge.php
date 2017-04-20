@@ -13,26 +13,14 @@ class Surcharge extends \Magento\Sales\Block\Adminhtml\Order\Totals
 
     private $configInfo;
 
-    /**
-     * @var \Magento\Framework\DataObject
-     */
-    protected $source;
-
     public function __construct(
         \Magento\Framework\View\Element\Template\Context $context,
         \Magento\Framework\Registry $registry,
         \Magento\Sales\Helper\Admin $adminHelper,
         \SwiftOtter\ShippingSurcharge\Config\Info $configInfo,
         array $data = []
-    )
-    {
+    ) {
         $this->configInfo = $configInfo;
         parent::__construct($context, $registry, $adminHelper, $data);
-    }
-
-    public function initTotals()
-    {
-        $this->initSurcharge();
-        return $this;
     }
 }

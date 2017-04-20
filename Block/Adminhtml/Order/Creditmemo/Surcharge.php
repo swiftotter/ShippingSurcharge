@@ -17,15 +17,9 @@ class Surcharge extends \Magento\Sales\Block\Adminhtml\Order\Creditmemo\Totals
         \Magento\Framework\Registry $registry,
         \Magento\Sales\Helper\Admin $adminHelper,
         \SwiftOtter\ShippingSurcharge\Config\Info $configInfo,
-        array $data = [])
-    {
+        array $data = []
+    ) {
         parent::__construct($context, $registry, $adminHelper, $data);
         $this->configInfo = $configInfo;
-    }
-
-    public function initTotals()
-    {
-        $this->initSurcharge();
-        return $this;
     }
 }

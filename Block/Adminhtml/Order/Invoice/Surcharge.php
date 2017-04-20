@@ -18,8 +18,7 @@ class Surcharge extends \Magento\Sales\Block\Adminhtml\Order\Invoice\Totals
         \Magento\Sales\Helper\Admin $adminHelper,
         \SwiftOtter\ShippingSurcharge\Config\Info $configInfo,
         array $data = []
-    )
-    {
+    ) {
         $this->configInfo = $configInfo;
         parent::__construct($context, $registry, $adminHelper, $data);
     }
