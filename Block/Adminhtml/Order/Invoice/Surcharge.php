@@ -12,11 +12,6 @@ class Surcharge extends \Magento\Sales\Block\Adminhtml\Order\Invoice\Totals
 
     private $configInfo;
 
-    /**
-     * @var \Magento\Framework\DataObject
-     */
-    protected $source;
-
     public function __construct(
         \Magento\Framework\View\Element\Template\Context $context,
         \Magento\Framework\Registry $registry,
@@ -27,11 +22,5 @@ class Surcharge extends \Magento\Sales\Block\Adminhtml\Order\Invoice\Totals
     {
         $this->configInfo = $configInfo;
         parent::__construct($context, $registry, $adminHelper, $data);
-    }
-
-    public function initTotals()
-    {
-        $this->initSurcharge();
-        return $this;
     }
 }

@@ -6,7 +6,8 @@
 
 namespace SwiftOtter\ShippingSurcharge\Block;
 
-use \SwiftOtter\ShippingSurcharge\Model\Surcharge as SurchargeModel;
+use Magento\Framework\DataObject;
+use SwiftOtter\ShippingSurcharge\Model\Surcharge as SurchargeModel;
 
 trait SurchargeTotal
 {
@@ -20,6 +21,12 @@ trait SurchargeTotal
         $this->configInfo = $configInfo;
     }
 
+    public function initTotals()
+    {
+        $this->initSurcharge();
+        return $this;
+    }
+
     private function initSurcharge()
     {
         if (!$this->configInfo->isFeatureEnabled() || !$this->getSource()) return;
@@ -27,7 +34,7 @@ trait SurchargeTotal
         /** @var $parent \Magento\Sales\Block\Adminhtml\Order\Invoice\Totals */
         $parent = $this->getParentBlock();
 
-        $surcharge = new \Magento\Framework\DataObject(
+        $surcharge = new DataObject(
             [
                 'code' => SurchargeModel::SURCHARGE,
                 'value' => $this->getSource()->getData(SurchargeModel::SURCHARGE),

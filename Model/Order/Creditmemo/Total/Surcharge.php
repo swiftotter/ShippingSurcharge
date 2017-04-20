@@ -48,7 +48,6 @@ class Surcharge extends \Magento\Sales\Model\Order\Creditmemo\Total\AbstractTota
 
         $creditmemo->setData(SurchargeModel::SURCHARGE, $surcharge);
         $creditmemo->setData(SurchargeModel::BASE_SURCHARGE, $baseSurcharge);
-
         $creditmemo->setGrandTotal($creditmemo->getGrandTotal() + $surcharge);
         $creditmemo->setBaseGrandTotal($creditmemo->getBaseGrandTotal() + $baseSurcharge);
 

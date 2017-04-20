@@ -18,9 +18,8 @@ class Surcharge extends \Magento\Sales\Model\Order\Invoice\Total\AbstractTotal
         /** @var \Magento\Sales\Model\Order\Invoice\Item $item */
         foreach ($invoice->getAllItems() as $item) {
             $orderItem = $item->getOrderItem();
-            $orderItemQty = $orderItem->getQtyOrdered();
 
-            if (!$orderItemQty || $orderItem->isDummy() || $item->getQty() < 1) {
+            if ($orderItem->getQtyOrdered() < 1 || $orderItem->isDummy() || $item->getQty() < 1) {
                 continue;
             }
 
@@ -33,7 +32,6 @@ class Surcharge extends \Magento\Sales\Model\Order\Invoice\Total\AbstractTotal
 
         $invoice->setData(SurchargeModel::SURCHARGE, $surcharge);
         $invoice->setData(SurchargeModel::BASE_SURCHARGE, $baseSurcharge);
-
         $invoice->setGrandTotal($invoice->getGrandTotal() + $surcharge);
         $invoice->setBaseGrandTotal($invoice->getBaseGrandTotal() + $baseSurcharge);
 

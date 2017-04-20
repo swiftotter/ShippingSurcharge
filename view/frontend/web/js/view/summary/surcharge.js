@@ -23,11 +23,7 @@ define([
         getSurchargeValue: function() {
             var surcharge = totals.getSegment('shipping_surcharge');
 
-            if (surcharge && surcharge.value) {
-                return surcharge.value;
-            }
-
-            return 0;
+            return (surcharge && surcharge.value) ? surcharge.value : 0;
         }
     });
 });
