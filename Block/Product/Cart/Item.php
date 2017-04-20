@@ -4,13 +4,13 @@
  * @website https://swiftotter.com
  **/
 
-namespace SwiftOtter\ShippingSurcharge\Block\ShippingSurchargeAmount\Cart;
+namespace SwiftOtter\ShippingSurcharge\Block\Product\Cart;
 
 use SwiftOtter\ShippingSurcharge\Api\Block\Product\ShippingSurchargeAmountInterface;
-use SwiftOtter\ShippingSurcharge\Block\ShippingSurchargeAmount;
+use SwiftOtter\ShippingSurcharge\Block\ItemSurcharge;
 use Magento\Quote\Model\Quote\Item as QuoteItem;
 
-class Item extends ShippingSurchargeAmount implements ShippingSurchargeAmountInterface
+class Item extends ItemSurcharge implements ShippingSurchargeAmountInterface
 {
     /**
      * @var QuoteItem

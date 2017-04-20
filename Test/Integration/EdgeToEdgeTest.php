@@ -21,28 +21,150 @@
 
 namespace SwiftOtter\ShippingSurcharge;
 
+use SwiftOtter\ShippingSurcharge\Model\Surcharge;
+use Magento\TestFramework\ObjectManager;
+
 /**
  * @magentoDbIsolation enabled
  */
 
-class EdgeToEdgeTest extends \PHPUnit_Framework_Testcase
+class EdgeToEdgeTest extends \PHPUnit_Framework_TestCase
 {
-    public function testNothing()
-    {
-        $this->fail('asdfasdf');
-    }
+    /**
+     * @var ObjectManager
+     */
+    private $objectManager;
 
-    public function createTableRateFixture($amount)
+    /**
+     * @var \Magento\Catalog\Api\ProductRepositoryInterface
+     */
+    private $productRepository;
+
+    /**
+     * @var \Magento\Quote\Model\Quote
+     */
+    private $quote;
+
+    /**
+     * @var \Magento\Quote\Model\QuoteRepository
+     */
+    private $quoteRepository;
+
+    protected function setUp()
     {
-        //Create table rate fixture
+        $this->objectManager = ObjectManager::getInstance();
+        $this->productRepository = $this->objectManager->create(\Magento\Catalog\Api\ProductRepositoryInterface::class);
+        $this->quote = $this->objectManager->create(\Magento\Quote\Model\Quote::class);
+        $this->quoteRepository = $this->objectManager->create(\Magento\Quote\Model\QuoteRepository::class);
     }
 
     /**
-     * @magentoDataFixture Magento/Quote/_files/empty_quote.php
-     * @magentoDataFixture Magento/Catalog/_files/product_simple.php
+     * @magentoDataFixture Magento/Checkout/_files/active_quote.php
      */
-    public function testAppliesSurchargeToTablerate()
+    public function testSurchargeAppliesToOneProduct()
     {
-        //Load the product, set a surcharge, and save. Add product to quote, save the quote. Get shipping instance, collect shipping rates. Ensure table rate fixture plus the surcharge works.
+        $surchargeAmount = '14.02';
+
+        $product = $this->getMockProduct(1, $surchargeAmount);
+        $quote = $this->getMockQuote($product);
+        $totals = $quote->getTotals();
+
+        $this->assertEquals((float) $product->getPrice(), $totals['subtotal']->getValue());
+        $this->assertEquals((float) $surchargeAmount, $product->getData(Surcharge::SURCHARGE));
+        $this->assertEquals((float) $surchargeAmount, $totals[Surcharge::SURCHARGE]->getValue());
+
+        $this->assertEquals((float) $product->getPrice() + (float) $surchargeAmount, $quote->getGrandTotal());
+    }
+
+    /**
+     * @magentoDataFixture Magento/Checkout/_files/active_quote.php
+     */
+    public function testSurchargeAppliesToMultipleProducts()
+    {
+        $surchargeAmounts = [20.04, 0, 4.84];
+
+        $products = array_map(function($surcharge, $key) {
+            return $this->getMockProduct($key, $surcharge);
+        }, $surchargeAmounts, array_keys($surchargeAmounts));
+
+        $quote = $this->getMockQuote($products);
+        $totals = $quote->getTotals();
+
+        $this->assertEquals(array_sum($surchargeAmounts), $totals[Surcharge::SURCHARGE]->getValue());
+        $this->assertEquals(((count($surchargeAmounts) * 10) + array_sum($surchargeAmounts)), $quote->getGrandTotal());
+    }
+
+    /**
+     * TODO: build out order submission
+     *
+     * @magentoDataFixture Magento/Customer/_files/customer.php
+     * @magentoDataFixture Magento/Customer/_files/customer_address.php
+     */
+    public function testSurchargeAppliesThroughOrder()
+    {
+        $quoteManagement = $this->objectManager->create(\Magento\Quote\Model\QuoteManagement::class);
+
+        $surchargeAmounts = [21.19, 1, 12.82];
+
+        $products = array_map(function($surcharge, $key) {
+            return $this->getMockProduct($key, $surcharge);
+        }, $surchargeAmounts, array_keys($surchargeAmounts));
+
+        $quote = $this->getMockQuote($products);
+        $totals = $quote->getTotals();
+
+//        $quoteManagement->submit($quote);
+
+        $this->assertEquals(array_sum($surchargeAmounts), $totals[Surcharge::SURCHARGE]->getValue());
+        $this->assertEquals(((count($surchargeAmounts) * 10) + array_sum($surchargeAmounts)), $quote->getGrandTotal());
+    }
+
+    private function getMockProduct($id, $surchargeAmount)
+    {
+        /** @var \Magento\Catalog\Model\Product $product */
+        $product = $this->objectManager->create(\Magento\Catalog\Model\Product::class);
+        $product->setTypeId(\Magento\Catalog\Model\Product\Type::TYPE_SIMPLE)
+            ->setAttributeSetId(4)
+            ->setWebsiteIds([1])
+            ->setName("Simple Product {$id}")
+            ->setSku("simple{$id}")
+            ->setPrice(10)
+            ->setData(Surcharge::SURCHARGE, $surchargeAmount)
+            ->setDescription('Description with <b>html tag</b>')
+            ->setVisibility(\Magento\Catalog\Model\Product\Visibility::VISIBILITY_BOTH)
+            ->setStatus(\Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_ENABLED)
+            ->setCategoryIds([2])
+            ->setStockData(['use_config_manage_stock' => 1, 'qty' => 100, 'is_qty_decimal' => 0, 'is_in_stock' => 1])
+            ->setUrlKey("url-key{$id}")
+            ->save();
+
+        $this->productRepository->save($product);
+
+        return $product;
+    }
+
+    private function getMockQuote($product)
+    {
+        /** @var \Magento\Quote\Model\Quote\Address $quoteShippingAddress */
+        $quoteShippingAddress = $this->objectManager->create(\Magento\Quote\Model\Quote\Address::class);;
+
+        /** @var \Magento\Quote\Model\Quote $quote */
+        $quote = $this->quote->load('test_order_1', 'reserved_order_id');
+
+        $quote->setShippingAddress($quoteShippingAddress);
+
+        if (is_array($product)) {
+            array_walk($product, function ($item) use (&$quote) {
+                $quote->addProduct($item);
+            });
+        } else {
+            $quote->addProduct($product);
+        }
+
+        $quote->collectTotals();
+
+        $this->quoteRepository->save($quote);
+
+        return $quote;
     }
 }

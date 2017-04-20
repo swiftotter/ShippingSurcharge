@@ -10,7 +10,7 @@ use Magento\Framework\View\Element\Template;
 use SwiftOtter\ShippingSurcharge\Api\Block\Product\ShippingSurchargeAmountInterface;
 use SwiftOtter\ShippingSurcharge\Setup\Definition\ExplanatoryNoteStaticBlock;
 
-abstract class ShippingSurchargeAmount extends Template implements ShippingSurchargeAmountInterface
+abstract class ItemSurcharge extends Template implements ShippingSurchargeAmountInterface
 {
     /**
      * @var string

@@ -1,6 +1,26 @@
 <?xml version="1.0" ?>
-<layout xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_layout.xsd">
+<layout xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <referenceBlock name="checkout.cart.item.renderers">
-        <block name="checkout.cart.item.shipping_surcharge" as="shipping_surcharge" class="SwiftOtter\ShippingSurcharge\Block\ShippingSurchargeAmount\Cart\Item" template="price/shipping_surcharge_amount.phtml" />
+        <block name="checkout.cart.item.shipping_surcharge" as="shipping_surcharge" class="SwiftOtter\ShippingSurcharge\Block\Product\Cart\Item" template="price/shipping_surcharge_amount.phtml" />
+    </referenceBlock>
+
+    <referenceBlock name="checkout.cart.totals">
+        <arguments>
+            <argument name="jsLayout" xsi:type="array">
+                <item name="components" xsi:type="array">
+                    <item name="block-totals" xsi:type="array">
+                        <item name="children" xsi:type="array">
+                            <item name="surcharge" xsi:type="array">
+                                <item name="component" xsi:type="string">SwiftOtter_ShippingSurcharge/js/view/summary/surcharge</item>
+                                <item name="config" xsi:type="array">
+                                    <item name="title" xsi:type="string" translate="true">Additional Shipping Charge</item>
+                                    <item name="template" xsi:type="string">SwiftOtter_ShippingSurcharge/view/summary/surcharge</item>
+                                </item>
+                            </item>
+                        </item>
+                    </item>
+                </item>
+            </argument>
+        </arguments>
     </referenceBlock>
 </layout>
