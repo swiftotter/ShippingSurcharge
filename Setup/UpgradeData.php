@@ -78,5 +78,10 @@ class UpgradeData implements UpgradeDataInterface
             $salesSetup->addAttribute('creditmemo_item', Surcharge::BASE_SURCHARGE, ['type' => 'decimal']);
             $salesSetup->addAttribute('creditmemo_item', Surcharge::SURCHARGE, ['type' => 'decimal']);
         }
+
+        if (version_compare($context->getVersion(), 2.1) === ModuleDataSetupInterface::VERSION_COMPARE_LOWER) {
+            $salesSetup->addAttribute('order', Surcharge::SURCHARGE_REFUNDED, ['type' => 'decimal' ]);
+            $salesSetup->addAttribute('order', Surcharge::BASE_SURCHARGE_REFUNDED, ['type' => 'decimal' ]);
+        }
     }
 }

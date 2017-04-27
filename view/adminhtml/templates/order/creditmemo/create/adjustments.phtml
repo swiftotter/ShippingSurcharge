@@ -1,0 +1,60 @@
+<?php
+/**
+ * @by SwiftOtter, Inc., 4/27/17
+ * @website https://swiftotter.com
+ **/
+
+// @codingStandardsIgnoreFile
+/** @var $block \SwiftOtter\ShippingSurcharge\Block\Adminhtml\Order\Creditmemo\SurchargeAdjustment */
+?>
+<?php if ($block->showSurcharge()): ?>
+    <tr>
+        <td class="label"><?php /* @escapeNotVerified */ echo __('Additional Shipping Charge') ?><div id="additional_shipping_charge"></div></td>
+        <td>
+            <span>
+                <span class="price" id="additional_shipping_charge_edit"><?php echo $this->getFormattedSurchargeAmount(); ?></span>
+            </span>
+            <input type="text"
+                   name="creditmemo[<?php echo \SwiftOtter\ShippingSurcharge\Model\Surcharge::SURCHARGE_REQUESTED_REFUND; ?>]"
+                   data-value="<?php /* @escapeNotVerified */ echo $block->getSurchargeAmount() ?>"
+                   class="input-text admin__control-text not-negative-amount hidden"
+                   id="additional_shipping_charge_value"/>
+            <script>
+                require(['prototype'], function(){
+
+                document.getElementById('additional_shipping_charge_edit').addEventListener('click', function (e) {
+                    e.currentTarget.classList.add('hidden');
+                    var shippingInput = document.getElementById('additional_shipping_charge_value');
+                    shippingInput.classList.remove('hidden');
+                    shippingInput.value = shippingInput.getAttribute('data-value');
+                });
+
+                //<![CDATA[
+                Validation.addAllThese([
+                    ['not-negative-amount', '<?php /* @escapeNotVerified */ echo __('Please enter a positive number in this field.') ?>', function(v) {
+                        if(v.length)
+                            return /^\s*\d+([,.]\d+)*\s*%?\s*$/.test(v);
+                        else
+                            return true;
+                    }]
+                ]);
+
+                if ($('additional_shipping_charge')) {
+                    $('additional_shipping_charge').advaiceContainer = $('additional_shipping_charge');
+                    unblockSubmit('additional_shipping_charge');
+                }
+
+                function unblockSubmit(id) {
+                    $(id).observe('focus', function(event) {
+                        if ($$('button[class="scalable update-button disabled"]').size() > 0) {
+                            enableElements('submit-button');
+                        }
+                    });
+                }
+                //]]>
+
+                });
+            </script>
+        </td>
+    </tr>
+<?php endif; ?>

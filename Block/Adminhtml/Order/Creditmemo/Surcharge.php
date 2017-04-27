@@ -1,6 +1,6 @@
 <?php
 /**
- * @by SwiftOtter, Inc. 4/19/17
+ * @by SwiftOtter, Inc. 4/11/17
  * @website https://swiftotter.com
  **/
 
@@ -19,7 +19,7 @@ class Surcharge extends \Magento\Sales\Block\Adminhtml\Order\Creditmemo\Totals
         \SwiftOtter\ShippingSurcharge\Config\Info $configInfo,
         array $data = []
     ) {
-        parent::__construct($context, $registry, $adminHelper, $data);
         $this->configInfo = $configInfo;
+        parent::__construct($context, $registry, $adminHelper, $data);
     }
 }
