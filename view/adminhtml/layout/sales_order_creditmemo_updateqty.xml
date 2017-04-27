@@ -3,7 +3,9 @@
       xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
         <referenceBlock name="creditmemo_totals">
-            <block class="SwiftOtter\ShippingSurcharge\Block\Adminhtml\Order\Creditmemo\Surcharge" name="shipping_surcharge"/>
+            <block class="SwiftOtter\ShippingSurcharge\Block\Adminhtml\Order\Creditmemo\SurchargeAdjustment"
+                   name="shipping_surcharge"
+                   template="SwiftOtter_ShippingSurcharge::order/creditmemo/create/adjustments.phtml" />
         </referenceBlock>
     </body>
 </page>

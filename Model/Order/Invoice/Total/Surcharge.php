@@ -18,13 +18,14 @@ class Surcharge extends \Magento\Sales\Model\Order\Invoice\Total\AbstractTotal
         /** @var \Magento\Sales\Model\Order\Invoice\Item $item */
         foreach ($invoice->getAllItems() as $item) {
             $orderItem = $item->getOrderItem();
+            $itemQty = $item->getQty();
 
-            if ($orderItem->getQtyOrdered() < 1 || $orderItem->isDummy() || $item->getQty() < 1) {
+            if ($orderItem->getQtyOrdered() < 1 || $orderItem->isDummy() || $itemQty < 1) {
                 continue;
             }
 
-            $item->setData(SurchargeModel::SURCHARGE, $orderItem->getData(SurchargeModel::SURCHARGE));
-            $item->setData(SurchargeModel::BASE_SURCHARGE, $orderItem->getData(SurchargeModel::BASE_SURCHARGE));
+            $item->setData(SurchargeModel::SURCHARGE, $this->calculateSurchargeFrom($orderItem, $itemQty));
+            $item->setData(SurchargeModel::BASE_SURCHARGE, $this->calculateSurchargeFrom($orderItem, $itemQty, SurchargeModel::BASE_SURCHARGE));
 
             $surcharge += $item->getData(SurchargeModel::SURCHARGE);
             $baseSurcharge += $item->getData(SurchargeModel::BASE_SURCHARGE);
@@ -36,5 +37,10 @@ class Surcharge extends \Magento\Sales\Model\Order\Invoice\Total\AbstractTotal
         $invoice->setBaseGrandTotal($invoice->getBaseGrandTotal() + $baseSurcharge);
 
         return $this;
+    }
+
+    private function calculateSurchargeFrom(\Magento\Sales\Model\Order\Item $orderItem, $itemQty, $key = SurchargeModel::SURCHARGE)
+    {
+        return (int) ceil(($orderItem->getData($key) / $orderItem->getQtyOrdered()) * $itemQty);
     }
 }
