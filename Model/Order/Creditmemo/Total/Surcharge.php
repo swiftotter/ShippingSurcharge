@@ -15,8 +15,14 @@ class Surcharge extends \Magento\Sales\Model\Order\Creditmemo\Total\AbstractTota
      */
     private $priceCurrency;
 
-    public function __construct(\Magento\Framework\Pricing\PriceCurrencyInterface $priceCurrency, array $data = [])
-    {
+    /**
+     * @param \Magento\Framework\Pricing\PriceCurrencyInterface $priceCurrency
+     * @param array $data
+     */
+    public function __construct(
+        \Magento\Framework\Pricing\PriceCurrencyInterface $priceCurrency,
+        array $data = []
+    ) {
         parent::__construct($data);
         $this->priceCurrency = $priceCurrency;
     }
