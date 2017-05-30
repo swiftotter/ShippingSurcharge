@@ -64,7 +64,7 @@ class QuoteSubmit implements ObserverInterface
 
     private function calculateTotalsFromItems(AbstractExtensibleModel ...$items) : float
     {
-        return array_reduce($items, function (int $acc, AbstractExtensibleModel $item) {
+        return array_reduce($items, function (float $acc, AbstractExtensibleModel $item) {
             $itemTotal = $this->surchargeCalculator->calculateSurchargeForItem($item);
 
             $item->setData(Surcharge::BASE_SURCHARGE, $itemTotal);

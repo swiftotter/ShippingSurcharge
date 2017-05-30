@@ -95,10 +95,7 @@ class EdgeToEdgeTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * TODO: build out order submission
-     *
-     * @magentoDataFixture Magento/Customer/_files/customer.php
-     * @magentoDataFixture Magento/Customer/_files/customer_address.php
+     * @magentoDataFixture Magento/Checkout/_files/quote_with_address_saved.php
      */
     public function testSurchargeAppliesThroughOrder()
     {
@@ -111,12 +108,30 @@ class EdgeToEdgeTest extends \PHPUnit_Framework_TestCase
         }, $surchargeAmounts, array_keys($surchargeAmounts));
 
         $quote = $this->getMockQuote($products);
-        $totals = $quote->getTotals();
 
-//        $quoteManagement->submit($quote);
+        $addressData = include __DIR__ . '/../../../../../dev/tests/integration/testsuite/Magento/Sales/_files/address_data.php';
+        /** @var \Magento\Quote\Model\Quote\Address $billingAddress */
+        $billingAddress = $this->objectManager->create(\Magento\Quote\Model\Quote\Address::class, ['data' => $addressData]);
+        $billingAddress->setAddressType('billing');
 
-        $this->assertEquals(array_sum($surchargeAmounts), $totals[Surcharge::SURCHARGE]->getValue());
-        $this->assertEquals(((count($surchargeAmounts) * 10) + array_sum($surchargeAmounts)), $quote->getGrandTotal());
+        $shippingAddress = clone $billingAddress;
+        $shippingAddress->setId(null)->setAddressType('shipping');
+
+        $quote->setBillingAddress($billingAddress);
+        $quote->setShippingAddress($shippingAddress);
+        $quote->getPayment()->setMethod('checkmo');
+        $quote->setCustomerIsGuest(true);
+        $quote->getShippingAddress()->setShippingMethod('flatrate_flatrate');
+        $quote->getShippingAddress()->setCollectShippingRates(true);
+        $quote->getShippingAddress()->collectShippingRates();
+        $quote->collectTotals();
+
+        /** @var \Magento\Sales\Api\Data\OrderInterface $order */
+        $order = $quoteManagement->submit($quote);
+
+        /** # of products * Product Price + sum of surchages + product price already in quote */
+        $this->assertEquals(((count($surchargeAmounts) * 10) + array_sum($surchargeAmounts)) + 20, $order->getGrandTotal());
+        $this->assertEquals(array_sum($surchargeAmounts), $order->getData(Surcharge::BASE_SURCHARGE));
     }
 
     private function getMockProduct($id, $surchargeAmount)
@@ -143,6 +158,10 @@ class EdgeToEdgeTest extends \PHPUnit_Framework_TestCase
         return $product;
     }
 
+    /**
+     * @param $product
+     * @return \Magento\Quote\Model\Quote
+     */
     private function getMockQuote($product)
     {
         /** @var \Magento\Quote\Model\Quote\Address $quoteShippingAddress */
