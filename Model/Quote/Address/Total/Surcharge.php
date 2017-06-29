@@ -43,13 +43,11 @@ class Surcharge extends \Magento\Quote\Model\Quote\Address\Total\AbstractTotal
     public function collect(Quote $quote, ShippingAssignmentInterface $shippingAssignment, Quote\Address\Total $total) {
         parent::collect($quote, $shippingAssignment, $total);
 
-        if ($surchargeAmount = $this->calculateSurcharge($quote)) {
-            $quote->setData(SurchargeModel::SURCHARGE, $surchargeAmount);
+        $surchargeAmount = $this->calculateSurcharge($quote);
+        $quote->setData(SurchargeModel::SURCHARGE, $surchargeAmount);
 
-            $total->setTotalAmount(SurchargeModel::SURCHARGE, $this->priceCurrency->convert($surchargeAmount, $quote->getStore()));
-            $total->setBaseTotalAmount(SurchargeModel::SURCHARGE, $surchargeAmount);
-        }
-
+        $total->setTotalAmount(SurchargeModel::SURCHARGE, $this->priceCurrency->convert($surchargeAmount, $quote->getStore()));
+        $total->setBaseTotalAmount(SurchargeModel::SURCHARGE, $surchargeAmount);
 
         return $this;
     }
